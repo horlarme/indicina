@@ -27,12 +27,16 @@ class Url extends Model
 
     protected $guarded = [];
 
-    protected static function boot()
+    protected static function booted()
     {
-        self::creating(function (Url $model) {
-            $characterLength = random_int(10, 30);
+        static::creating(function (Url $model) {
+            // check if the found value is not in database
+            do {
+                $characterLength = random_int(5, 10);
+                $id = Str::random($characterLength);
+            } while (self::where('id', $id)->exists());
 
-            $model->id = Str::random($characterLength);
+            $model->id = $id;
         });
     }
 }

@@ -2,21 +2,29 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class EncodeTest extends TestCase
 {
+    use RefreshDatabase;
+
+    protected function shouldSeed(): bool
+    {
+        return true;
+    }
+
     const ROUTE = '/api/encode';
     const VALID_URL = 'https://faceboook.com';
     const INVALID_URL = 'http:/faceboook';
 
     public function testUserCanEncodeUrl()
     {
-        $this->getJson(self::ROUTE, [
+        $this->postJson(self::ROUTE, [
             'url' => self::VALID_URL
         ])
-            ->assertJson([
+            ->assertJsonStructure([
                 'data' => ['short', 'long', 'hits', 'created_at']
             ])
             ->assertStatus(Response::HTTP_CREATED);
@@ -24,9 +32,9 @@ class EncodeTest extends TestCase
 
     public function testUserCannotEncodeInvalidUrls()
     {
-        $this->getJson(self::ROUTE, [
+        $this->postJson(self::ROUTE, [
             'url' => self::INVALID_URL
         ])
-            ->assertStatus(Response::HTTP_NOT_ACCEPTABLE);
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
