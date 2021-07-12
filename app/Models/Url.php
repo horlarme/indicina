@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Exceptions\NotFoundException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
@@ -38,5 +40,17 @@ class Url extends Model
 
             $model->id = $id;
         });
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function resolveRouteBinding($value, $field = null): Model
+    {
+        $model = parent::resolveRouteBinding($value, $field);
+
+        if (!$model) throw new NotFoundException();
+
+        return $model;
     }
 }

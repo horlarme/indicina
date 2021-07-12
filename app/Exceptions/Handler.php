@@ -15,7 +15,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
+        NotFoundException::class
     ];
 
     /**
@@ -48,7 +48,7 @@ class Handler extends ExceptionHandler
                 'error' => $e->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        dd($e);
+
         return parent::render($request, $e);
     }
 }
